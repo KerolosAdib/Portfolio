@@ -2,16 +2,19 @@ import ScrollReveal from "./ScrollReveal";
 
 export default function About() {
   return (
-    <section id="about" className="py-24 px-6">
+    <section
+      id="about"
+      className="section-light bg-background text-foreground py-24 px-6"
+    >
       <div className="max-w-6xl mx-auto">
         <ScrollReveal>
           <h2 className="text-3xl font-bold mb-2">
-            <span className="bg-gradient-to-br from-blue-500 to-cyan-400 bg-clip-text text-transparent">About Me</span>
+            <span className="bg-gradient-to-br from-accent to-ember bg-clip-text text-transparent">About Me</span>
           </h2>
           <div className="w-16 h-1 bg-accent rounded-full mb-12" />
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-5 gap-12 items-center">
+        <div className="grid md:grid-cols-5 gap-20 items-center">
           {/* Text */}
           <ScrollReveal className="md:col-span-3" delay={200}>
             <div className="space-y-4 text-muted leading-relaxed">
@@ -24,7 +27,7 @@ export default function About() {
                 across cybersecurity, data analysis, and more.
               </p>
               <p>
-                My path into engineering started with a simple curiosity — I
+                My path into engineering started with a simple curiosity. I
                 wanted to understand how things work under the hood. That led me
                 through a CS degree at the University of Washington, an
                 internship building healthcare communication tools at Philips,
@@ -34,7 +37,7 @@ export default function About() {
               </p>
               <p>
                 Right now, I&apos;m especially excited about the intersection of
-                AI and backend engineering — integrating LLMs into production
+                AI and backend engineering: integrating LLMs into production
                 workflows, building agentic systems, and figuring out how to
                 make these tools genuinely useful. When I&apos;m not coding,
                 I&apos;m probably exploring a new framework, tinkering with a
@@ -44,14 +47,18 @@ export default function About() {
           </ScrollReveal>
 
           {/* Photo Placeholder */}
-          <ScrollReveal className="md:col-span-2 flex justify-center" delay={400} direction="right">
+          <ScrollReveal className="md:col-span-2 flex" delay={400} direction="right">
             <div className="relative group">
-              <div className="w-64 h-64 rounded-2xl bg-card-bg border-2 border-card-border overflow-hidden transition-transform duration-300 group-hover:scale-105">
+              <div className="w-128 h-128 rounded-2xl bg-card-bg border-2 border-card-border overflow-hidden transition-transform duration-300 group-hover:scale-105">
+                {/* The crimson backdrop is the most saturated block on the page
+                    and outranks the amber accent. Pulling it back to 70% lets
+                    the accent stay the loudest color. Full saturation returns
+                    on hover, so the photo is muted, not washed out. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/image0.jpg"
                   alt="Kero Adib"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover saturate-[0.70] transition-[filter] duration-300 group-hover:saturate-100"
                 />
               </div>
               {/* Decorative border */}

@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, Rubik, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Kero Adib | Software Engineer",
   description:
-    "Portfolio of Kero Adib — Backend and AI Software Engineer with experience at Google and Zazmic, specializing in scalable backend systems, API design, and AI-driven automation.",
+    "Portfolio of Kero Adib. Software Engineer with experience at Google and Zazmic, specializing in scalable backend systems, API design, and AI-driven automation.",
   openGraph: {
     title: "Kero Adib | Software Engineer",
     description:
-      "Backend and AI Software Engineer with experience at Google and Zazmic. Building scalable backend systems and AI-powered tools.",
+      "Software Engineer. ex-Google, now building agentic systems at Zazmic.",
     url: "https://keroadib.com",
     siteName: "Kero Adib",
     images: [
@@ -27,7 +32,7 @@ export const metadata: Metadata = {
         url: "/image0.jpg",
         width: 873,
         height: 1290,
-        alt: "Kero Adib — Software Engineer",
+        alt: "Kero Adib, Software Engineer",
       },
     ],
     locale: "en_US",
@@ -37,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kero Adib | Software Engineer",
     description:
-      "Backend and AI Software Engineer with experience at Google and Zazmic. Building scalable backend systems and AI-powered tools.",
+      "Software Engineer. ex-Google, now building agentic systems at Zazmic.",
     images: ["/image0.jpg"],
   },
   metadataBase: new URL("https://keroadib.com"),
@@ -51,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${rubik.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

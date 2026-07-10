@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="315" viewBox="0 0 600 315">
+  <defs>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="315" fill="#0a0a0a"/>
+  <text
+    x="300"
+    y="215"
+    text-anchor="middle"
+    font-family="Geist, sans-serif"
+    font-weight="700"
+    font-size="160"
+    letter-spacing="-6"
+    fill="url(#textGradient)"
+  >KA</text>
+</svg>

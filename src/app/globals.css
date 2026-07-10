@@ -1,17 +1,328 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: #0a0a0a;
-  --color-foreground: #ededed;
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-card-bg: #111111;
-  --color-card-border: #1e1e1e;
-  --color-muted: #a1a1aa;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Colors are a plain @theme, NOT @theme inline, on purpose. Plain @theme emits
+   real `--color-*` custom properties and compiles utilities to `var(--color-x)`,
+   which is what lets `.section-light` below retheme a whole band. Switch this
+   back to `inline` and every light section silently turns dark again. */
+@theme {
+  --color-background: #0b0906;
+  --color-foreground: #f6f0e6;
+  --color-accent: #ffb020;
+  --color-accent-hover: #ffc24d;
+  --color-ember: #ff6b1a;
+  --color-card-bg: #15110c;
+  --color-card-border: #2c2317;
+  --color-muted: #a2937e;
+  --color-danger: #f87171;
 
   --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+}
+
+/* Fonts stay inline: they reference the `--font-*` vars next/font puts on <html>. */
+@theme inline {
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-rubik);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+:root {
+  --card-glow: rgba(255, 176, 32, 0.12);
+  --card-glow-hover: rgba(255, 176, 32, 0.25);
+}
+
+/* Light bands. Amber #ffb020 is 1.83:1 on an off-white ground, a hard WCAG
+   failure, so light sections swap in a darkened amber (#b45309, 5.02:1) and a
+   darkened ember for the heading gradient. Because the utilities resolve
+   through var(), overriding the tokens here re-themes every card, tag, date,
+   rule, and heading inside the section without any markup changes.
+
+   These selectors are unlayered, so they beat Tailwind's `@layer theme` values
+   despite matching :root's specificity. */
+.section-light {
+  --color-background: #fbf8f3;
+  --color-foreground: #1c160e;
+  --color-accent: #b45309;
+  --color-accent-hover: #92400e;
+  --color-ember: #9a3412;
+  --color-card-bg: #ffffff;
+  --color-card-border: #e6ded1;
+  --color-muted: #6b6154;
+  --color-danger: #b91c1c;
+
+  /* An amber glow on white reads as a yellow smudge. Go neutral and quiet. */
+  --card-glow: rgba(28, 22, 14, 0.06);
+  --card-glow-hover: rgba(28, 22, 14, 0.12);
+}
+
+/* Raised ink (Skills). A second dark band has to travel roughly 6 L* before the
+   eye registers it as a different surface. #14100b was only 2.4 L* from the hero
+   and read as identical to it. This is 6.5 away. */
+.section-raised {
+  --color-background: #201810;
+  --color-card-bg: #2a2016;
+  --color-card-border: #3b2e20;
+}
+
+/* Clay (Experience). The only mid tone on the page, neither ground nor paper,
+   which is why the parallax texture lives here: it has something to sit against. */
+.section-clay {
+  --color-background: #2c2016;
+  --color-card-bg: #392a1d;
+  --color-card-border: #4a3928;
+}
+
+/* Sand (Projects). A deeper paper, and it cannot keep the paper accent:
+   #b45309 on #f4eee3 is 4.35:1 and fails. #92400e restores it to 6.14:1. That
+   extra accent value is the entire cost of this surface. Standalone token set,
+   so it never depends on class order against .section-light. */
+.section-sand {
+  --color-background: #f4eee3;
+  --color-foreground: #1c160e;
+  --color-accent: #92400e;
+  --color-accent-hover: #7c2d12;
+  --color-ember: #7c2d12;
+  --color-card-bg: #fffdf8;
+  --color-card-border: #ded2bd;
+  --color-muted: #6b6154;
+  --color-danger: #b91c1c;
+
+  --card-glow: rgba(28, 22, 14, 0.06);
+  --card-glow-hover: rgba(28, 22, 14, 0.12);
+}
+
+/* 3D tilt on cards. The lift lives INSIDE this transform on purpose: the cards
+   previously used Tailwind's `hover:-translate-y-1`, which also writes
+   `transform`, so one of the two would have silently won. Here the hover pop is
+   `translateZ`, which is the correct move in a perspective context anyway.
+
+   `backface-visibility` and `transform-style` keep text from shimmering while
+   the card is rotated. The snap back on pointerleave is slower than the follow,
+   which is what makes it feel weighted rather than springy. */
+.tilt-perspective {
+  perspective: 900px;
+}
+
+.tilt-card {
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translateZ(var(--tilt-z, 0px));
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 300ms ease;
+  will-change: transform;
+}
+
+.tilt-perspective:hover .tilt-card {
+  transition: transform 80ms linear, box-shadow 300ms ease;
+  --tilt-z: 10px;
+}
+
+/* TiltCard never attaches its listeners here, but the CSS hover pop would still
+   fire, and on touch a hover state can stick after a tap. Kill it outright. */
+@media (hover: none), (pointer: coarse) {
+  .tilt-perspective:hover .tilt-card {
+    --tilt-z: 0px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-card {
+    transform: none;
+  }
+}
+
+/* The timeline rule fills with amber as the reader scrolls through the roles.
+   `TimelineProgress.tsx` writes `--timeline-progress` (0 to 1) and this scales
+   it. transform-origin: top so it grows downward. Transform only, no layout.
+
+   Under reduced motion the component never attaches its listener, so the var
+   stays unset and the 0 fallback would hide the fill entirely. The media query
+   below pins it to a static, complete line instead. */
+.timeline-progress {
+  transform-origin: top;
+  transform: scaleY(var(--timeline-progress, 0));
+  background: linear-gradient(to bottom, var(--color-accent), var(--color-ember));
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-progress {
+    transform: scaleY(1);
+  }
+}
+
+/* Deep-link targets. Skills.tsx links into individual job, project, and
+   certification cards. Without a visible landing cue the reader arrives
+   mid-page with no idea which card they were sent to. The outline persists
+   while the hash matches, which is the point. */
+.deep-link:target {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+  animation: target-pulse 1.4s ease-out 1;
+}
+
+@keyframes target-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 16px transparent;
+  }
+}
+
+/* Adaptive navbar. `Navbar.tsx` probes whichever band is under the bar and
+   copies that section's tokens onto these `--nav-*` variables. The fallbacks
+   are the root (ink) values, so the bar is correct before JS runs and if it
+   never runs at all. Every color below is derived, so a new surface class is
+   picked up automatically with no changes here. */
+.site-nav {
+  color: var(--nav-fg, var(--color-foreground));
+  border-bottom: 1px solid transparent;
+  transition: background-color 400ms ease, color 400ms ease, border-color 400ms ease;
+}
+
+.site-nav[data-scrolled="true"] {
+  background-color: color-mix(in srgb, var(--nav-bg, var(--color-background)) 82%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--nav-fg, var(--color-foreground)) 12%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.site-nav__logo {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--nav-ac, var(--color-accent)),
+    var(--nav-em, var(--color-ember))
+  );
+}
+
+.site-nav__link {
+  color: color-mix(in srgb, var(--nav-fg, var(--color-foreground)) 62%, transparent);
+}
+.site-nav__link:hover {
+  color: var(--nav-fg, var(--color-foreground));
+}
+.site-nav__link[data-active="true"] {
+  color: var(--nav-ac, var(--color-accent));
+}
+
+/* Label takes the band's own surface color, so it stays legible on every
+   accent: 10.87:1 on ink, 4.74:1 on paper, 6.14:1 on sand, 8.66:1 on clay. */
+.site-nav__cta {
+  background-color: var(--nav-ac, var(--color-accent));
+  color: var(--nav-bg, var(--color-background));
+}
+.site-nav__cta:hover {
+  background-color: var(--nav-ac-hover, var(--color-accent-hover));
+}
+
+.site-nav__bar {
+  background-color: var(--nav-fg, var(--color-foreground));
+}
+
+.site-nav__menu {
+  background-color: color-mix(in srgb, var(--nav-bg, var(--color-background)) 95%, transparent);
+}
+
+/* True parallax: the layer moves, just slower than the content.
+   `ParallaxLayer.tsx` writes `--parallax-y` on scroll and this translates by it.
+
+   Overdrawn at the top because the layer only ever translates *downward*, which
+   would otherwise expose a gap above it. 40% of the section's height comfortably
+   exceeds the maximum travel of SPEED * (viewport + section height).
+
+   Transform only, so it composites on the GPU and never triggers layout. The
+   previous implementation used `background-attachment: fixed`, which pins the
+   background to the viewport rather than moving it, and which iOS Safari
+   ignores outright. */
+/* You cannot see a smooth gradient move. Parallax is perceived through edges,
+   so the layer needs visible, trackable detail. It carries three scales: a 64px
+   minor grid, a 256px major grid, and a sparse dot field.
+
+   The grids are HARMONIC (256 = 4 x 64), not coprime. An earlier version used
+   64px and 176px so their intersections would drift rather than repeat. In
+   practice that lands coarse lines a few pixels off the fine ones, and the eye
+   reads those near-misses as mistakes rather than texture. Coincident major and
+   minor lines read as graph paper, which is the point. Keep the major period an
+   integer multiple of the minor one.
+
+   The dot layer is offset by half a minor cell (32px). Without that its centre
+   lands at 128px, a multiple of 64, so every dot would sit on a minor gridline
+   intersection and compound alpha with it. Offset, each dot sits in the middle
+   of a minor cell and stacks with nothing.
+
+   Only the large gradient headings sit on this layer; every piece of body text
+   in Experience is inside an opaque card. Large text needs 3:1, and the ember
+   end of the heading gradient is the fragile element (5.56:1 on bare clay).
+   Because major and minor lines coincide, their alphas compound, so the amber
+   blob is held at 0.06: at 0.10 the worst pixel drops ember to 2.98:1. The
+   ember blob can run brighter, being darker it lightens the ground less.
+   Worst pixel now: blob + minor + major = 3.20:1. */
+/* top overdraw must exceed max travel, SPEED * (viewport + section height).
+   At SPEED 0.25 that means 0.6*H >= 0.25*(vh + H), i.e. any section taller than
+   ~0.7 viewports is covered. At -40% it needed 1.67 viewports, which this
+   section may not clear. Raise this if you raise SPEED. */
+.parallax-layer {
+  position: absolute;
+  top: -60%;
+  bottom: -5%;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    /* landmarks, centred in each major cell */
+    radial-gradient(circle, rgba(246, 240, 230, 0.13) 1.5px, transparent 1.6px),
+    /* major grid, every 4th minor line */
+    linear-gradient(rgba(246, 240, 230, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(246, 240, 230, 0.1) 1px, transparent 1px),
+    /* minor grid */
+    linear-gradient(rgba(246, 240, 230, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(246, 240, 230, 0.05) 1px, transparent 1px),
+    /* atmosphere. Contributes no edges, so it stays dim. */
+    radial-gradient(circle at 15% 25%, rgba(255, 176, 32, 0.06), transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(255, 107, 26, 0.12), transparent 48%);
+  background-size:
+    256px 256px,
+    256px 256px,
+    256px 256px,
+    64px 64px,
+    64px 64px,
+    auto,
+    auto;
+  background-position:
+    32px 32px,
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    0 0;
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  will-change: transform;
+}
+
+/* ParallaxLayer bails out before attaching its listener, so the transform never
+   updates. This pins it at rest in case the preference changes mid-session. */
+@media (prefers-reduced-motion: reduce) {
+  .parallax-layer {
+    transform: none;
+  }
+}
+
+/* Every other band opens on flat colour, so its top padding reads as empty
+   space. The texture reaches this band's top edge, so the same 96px reads as
+   ground rather than air and the heading looks jammed against the seam. This
+   scrim fades the texture in beneath the heading rule.
+
+   It cannot be a mask on .parallax-layer: that element translates, so the fade
+   would slide down the band with it. It has to be its own static element.
+   `--color-background` resolves to the clay token, so it tracks the band. */
+.parallax-fade {
+  background: linear-gradient(
+    to bottom,
+    var(--color-background),
+    transparent
+  );
 }
 
 @keyframes fade-in-up {
@@ -32,5 +343,28 @@ html {
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

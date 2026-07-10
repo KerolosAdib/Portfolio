@@ -36,11 +36,14 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 px-6">
+    <section
+      id="contact"
+      className="section-light bg-background text-foreground py-24 px-6"
+    >
       <div className="max-w-6xl mx-auto">
         <ScrollReveal>
           <h2 className="text-3xl font-bold mb-2">
-            <span className="bg-gradient-to-br from-blue-500 to-cyan-400 bg-clip-text text-transparent">Get In Touch</span>
+            <span className="bg-gradient-to-br from-accent to-ember bg-clip-text text-transparent">Get In Touch</span>
           </h2>
           <div className="w-16 h-1 bg-accent rounded-full mb-12" />
         </ScrollReveal>
@@ -72,7 +75,7 @@ export default function Contact() {
                 </p>
                 <button
                   onClick={() => setStatus("idle")}
-                  className="px-6 py-2 rounded-lg bg-accent hover:bg-accent-hover text-white text-sm font-medium transition-colors duration-200"
+                  className="px-6 py-2 rounded-lg bg-accent hover:bg-accent-hover text-background text-sm font-medium transition-colors duration-200 cursor-pointer"
                 >
                   Send Another
                 </button>
@@ -144,7 +147,7 @@ export default function Contact() {
                 </div>
 
                 {status === "error" && (
-                  <p className="text-red-400 text-sm">
+                  <p className="text-danger text-sm">
                     Something went wrong. Please try again or email me directly.
                   </p>
                 )}
@@ -152,7 +155,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="w-full px-8 py-3 rounded-xl bg-accent hover:bg-accent-hover text-white font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full px-8 py-3 rounded-xl bg-accent hover:bg-accent-hover text-background font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {status === "loading" ? (
                     <>

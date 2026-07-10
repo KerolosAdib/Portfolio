@@ -1,15 +1,19 @@
 import ScrollReveal from "./ScrollReveal";
+import TiltCard from "./TiltCard";
 
+/* `id` is a deep-link target that Skills.tsx links to. See the note there. */
 const projects = [
   {
-    title: "Stats Retrieval Backend — flashkick.gg",
+    id: "proj-flashkick",
+    title: "Stats Retrieval Backend for flashkick.gg",
     description:
       "A modular backend pipeline that extracts and processes tournament data from Start.gg in real time. Enables reliable player and set association for Street Fighter 6 events, with architecture designed to scale across additional fighting game titles.",
-    tags: ["JavaScript", "Node.js", "GraphQL", "PostgreSQL"],
+    tags: ["JavaScript", "Node.js", "GraphQL", "PostgreSQL", "AWS"],
     github: "https://github.com/KerolosAdib",
     live: "https://flashkick.gg",
   },
   {
+    id: "proj-strike-bot",
     title: "Strike-Bot",
     description:
       "A Discord bot built to streamline server administration with an automated strike system for tracking and managing user infractions. Provides moderation tools for warnings, escalation, and record-keeping, all driven by event-based architecture.",
@@ -18,9 +22,10 @@ const projects = [
     live: null,
   },
   {
+    id: "proj-corpses",
     title: "Corpses Are Forever",
     description:
-      "A 2D puzzle game built in a 3-person team where players strategically use fallen characters to solve increasingly complex challenges. Playable in the browser — designed with creative problem-solving mechanics and developed using Agile workflows.",
+      "A 2D puzzle game built in a 3-person team where players strategically use fallen characters to solve increasingly complex challenges. Playable in the browser, designed with creative problem-solving mechanics and developed using Agile workflows.",
     tags: ["HTML", "CSS", "JavaScript", "Agile"],
     github: "https://github.com/RemoteControlFisher/CorpsesForeverGame",
     live: "https://remotecontrolfisher.github.io/CorpsesForeverGame/",
@@ -29,11 +34,14 @@ const projects = [
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-24 px-6">
+    <section
+      id="projects"
+      className="section-sand bg-background text-foreground py-24 px-6"
+    >
       <div className="max-w-6xl mx-auto">
         <ScrollReveal>
           <h2 className="text-3xl font-bold mb-2">
-            <span className="bg-gradient-to-br from-blue-500 to-cyan-400 bg-clip-text text-transparent">Projects</span>
+            <span className="bg-gradient-to-br from-accent to-ember bg-clip-text text-transparent">Projects</span>
           </h2>
           <div className="w-16 h-1 bg-accent rounded-full mb-12" />
         </ScrollReveal>
@@ -41,11 +49,17 @@ export default function Projects() {
         <div className="grid md:grid-cols-2 gap-6">
           {projects.map((project, index) => (
             <ScrollReveal
-              key={project.title}
+              key={project.id}
               delay={index * 150}
               direction={index % 2 === 0 ? "left" : "right"}
             >
-              <div className="group p-6 rounded-2xl bg-card-bg border border-card-border shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+              {/* The lift is now `translateZ` inside .tilt-card, not
+                  `hover:-translate-y-1`. Two rules writing `transform` on one
+                  element means one of them silently loses. */}
+              <TiltCard
+                id={project.id}
+                className="deep-link scroll-mt-28 group p-6 rounded-2xl bg-card-bg border border-card-border shadow-[0_0_20px_var(--card-glow)] hover:shadow-[0_0_30px_var(--card-glow-hover)] flex flex-col h-full"
+              >
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-accent transition-colors duration-200">
                   {project.title}
                 </h3>
@@ -110,7 +124,7 @@ export default function Projects() {
                     </a>
                   )}
                 </div>
-              </div>
+              </TiltCard>
             </ScrollReveal>
           ))}
         </div>
