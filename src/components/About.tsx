@@ -14,7 +14,7 @@ export default function About() {
           <div className="w-16 h-1 bg-accent rounded-full mb-12" />
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-5 gap-20 items-center">
+        <div className="grid md:grid-cols-5 gap-12 md:gap-20 items-center">
           {/* Text */}
           <ScrollReveal className="md:col-span-3" delay={200}>
             <div className="space-y-4 text-muted leading-relaxed">
@@ -47,9 +47,12 @@ export default function About() {
           </ScrollReveal>
 
           {/* Photo Placeholder */}
-          <ScrollReveal className="md:col-span-2 flex" delay={400} direction="right">
-            <div className="relative group">
-              <div className="w-128 h-128 rounded-2xl bg-card-bg border-2 border-card-border overflow-hidden transition-transform duration-300 group-hover:scale-105">
+          <ScrollReveal className="md:col-span-2 flex justify-center md:justify-start" delay={400} direction="right">
+            {/* Fluid below md so the photo never exceeds the phone's width and
+                forces horizontal scroll; pinned back to a fixed 512px square from
+                md up, which is the desktop layout unchanged. */}
+            <div className="relative group w-full max-w-sm md:w-auto md:max-w-none">
+              <div className="w-full aspect-square md:w-128 md:h-128 md:aspect-auto rounded-2xl bg-card-bg border-2 border-card-border overflow-hidden transition-transform duration-300 group-hover:scale-105">
                 {/* The crimson backdrop is the most saturated block on the page
                     and outranks the amber accent. Pulling it back to 70% lets
                     the accent stay the loudest color. Full saturation returns
