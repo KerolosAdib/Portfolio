@@ -25,13 +25,13 @@ export const metadata: Metadata = {
     title: "Kero Adib | Software Engineer",
     description:
       "Software Engineer. ex-Google, now building agentic systems at Zazmic.",
-    url: "https://keroadib.com",
+    url: "https://kero-adib-portfolio.vercel.app",
     siteName: "Kero Adib",
     images: [
       {
-        url: "/image0.jpg",
-        width: 873,
-        height: 1290,
+        url: "/og.png",
+        width: 1200,
+        height: 630,
         alt: "Kero Adib, Software Engineer",
       },
     ],
@@ -43,9 +43,12 @@ export const metadata: Metadata = {
     title: "Kero Adib | Software Engineer",
     description:
       "Software Engineer. ex-Google, now building agentic systems at Zazmic.",
-    images: ["/image0.jpg"],
+    images: ["/og.png"],
   },
-  metadataBase: new URL("https://keroadib.com"),
+  // Points social crawlers (LinkedIn, X) at the live host so the relative
+  // /og.png above resolves to a real, fetchable URL. Switch this back to the
+  // custom domain once keroadib.com is connected in Vercel.
+  metadataBase: new URL("https://kero-adib-portfolio.vercel.app"),
 };
 
 export default function RootLayout({
